@@ -1,12 +1,12 @@
 inject = require 'honk-di'
 
 CortexView       = window.Cortex?.view
+setAsPlayed      = require('vistar-html5player').Player.setAsPlayed
+{PassThrough}    = require 'stream'
 {ProofOfPlay}    = require 'vistar-html5player'
 {VariedAdStream} = require 'vistar-html5player'
-setAsPlayed      = require('vistar-html5player').Player.setAsPlayed
-config = require './config'
-binder = require './binder'
-{PassThrough} = require 'stream'
+
+config           = require './config'
 
 
 class Playlist extends PassThrough
