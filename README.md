@@ -30,3 +30,16 @@ Cortex?.view.start()
 the "config" object from the vistar-ad-view-cortex library will contain any
 parameters set in the Cortex dashboard.
 
+can install or set as a dependency in your package.json:
+
+```
+npm install vistar-ad-view-cortex
+```
+
+or in your package.json
+
+```
+"dependencies": {
+  "vistar-ad-view-cortex": "0.0.2"
+}
+```
