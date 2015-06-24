@@ -50,7 +50,7 @@ config =
   height:            Number(get 'vistar.height')
   debug:             get 'vistar.debug'
   cacheAssets:       get 'vistar.cache_assets'
-  allowAudio:        get 'vistar.allow_audio'
+  allow_audio:       eval(get 'vistar.allow_audio')
   directConnection:  get 'vistar.direct_connection'
   deviceId:          get 'vistar.device_id'
   venueId:           get 'vistar.venue_id'
@@ -66,7 +66,7 @@ config =
       id:               'display-0'
       width:            Number(get 'vistar.width')
       height:           Number(get 'vistar.height')
-      allow_audio:      get 'vistar.allow_audio'
+      allow_audio:      eval(get 'vistar.allow_audio')
     }
   ]
 
