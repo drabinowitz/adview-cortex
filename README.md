@@ -3,8 +3,7 @@
 a standalone Cortex lib for displaying Vistar Media ads.
 
 
-coffeescript
-```
+```coffeescript
 adConfig            = require('vistar-ad-view-cortex').config
 inject              = require 'honk-di'
 {AdView}            = require('vistar-ad-view-cortex')
