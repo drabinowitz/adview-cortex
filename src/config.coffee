@@ -1,0 +1,77 @@
+cortex        = Cortex?.getConfig() or {}
+defaultConfig = {}
+
+defaultConfig['vistar.api_key']           = '58b68728-11d4-41ed-964a-95dca7b59abd'
+defaultConfig['vistar.network_id']        = 'Ex-f6cCtRcydns8mcQqFWQ'
+defaultConfig['vistar.device_id']         = 'test-device-id'
+defaultConfig['vistar.debug']             = false
+defaultConfig['vistar.width']             = 1366
+defaultConfig['vistar.height']            = 768
+defaultConfig['vistar.cache_assets']      = true
+defaultConfig['vistar.allow_audio']       = false
+defaultConfig['vistar.direct_connection'] = false
+defaultConfig['vistar.cpm_floor_cents']   = 0
+defaultConfig['vistar.ad_buffer_length']  = 8
+defaultConfig['vistar.mime_types']        = [
+  'image/gif'
+  'image/jpg'
+  'image/png'
+  'video/webm'
+]
+defaultConfig['vistar.url'] =
+  'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
+
+
+try
+  latitude  = Number(cortex['vistar.lat'])
+  longitude = Number(cortex['vistar.lng'])
+catch err
+  console
+    .error "Invalid lat/lng: #{latitude}, #{longitude}. err=#{err?.message}"
+  latitude  = NaN
+  longitude = NaN
+
+if not isNaN(latitude) and not isNaN(longitude)
+  cortex['vistar.latitude']  = latitude
+  cortex['vistar.longitude'] = longitude
+
+cortex['vistar.mime_types'] = Cortex?.player.getMimeTypes()
+
+
+get = (key) ->
+  cortex[key] or defaultConfig[key]
+
+
+config =
+  url:               get 'vistar.url'
+  apiKey:            get 'vistar.api_key'
+  networkId:         get 'vistar.network_id'
+  width:             Number(get 'vistar.width')
+  height:            Number(get 'vistar.height')
+  debug:             get 'vistar.debug'
+  cacheAssets:       get 'vistar.cache_assets'
+  allowAudio:        get 'vistar.allow_audio'
+  directConnection:  get 'vistar.direct_connection'
+  deviceId:          get 'vistar.device_id'
+  venueId:           get 'vistar.venue_id'
+  queueSize:         Number(get 'vistar.ad_buffer_length')
+  mimeTypes:         get 'vistar.mime_types'
+  latitude:          get 'vistar.latitude'
+  longitude:         get 'vistar.longitude'
+  cpmFloorCents:     get 'vistar.cpm_floor_cents'
+  minDuration:       get 'vistar.min_duration'
+  maxDuration:       get 'vistar.max_duration'
+  displayArea: [
+    {
+      id:               'display-0'
+      width:            Number(get 'vistar.width')
+      height:           Number(get 'vistar.height')
+      allow_audio:      get 'vistar.allow_audio'
+    }
+  ]
+
+
+module.exports = {
+  get
+  config
+}
