@@ -65,7 +65,7 @@ class AdView
   render: =>
     """
     <div class="image-ad"
-      style="background: url(#{@currentAd.asset_url}) no-repeat center center fixed;">
+      style="background: url(#{@currentAd.asset_url}) no-repeat fixed;">
     </div>
     """
 
