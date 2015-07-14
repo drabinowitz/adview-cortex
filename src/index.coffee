@@ -48,7 +48,6 @@ class AdView
 
   _end: =>
     if @currentAd
-      console.log 'end w/current ad'
       ad = setAsPlayed @currentAd, true
       @proofOfPlay.write ad
       @currentAd = null
