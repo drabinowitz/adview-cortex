@@ -13,7 +13,7 @@
   "dependencies": {
     "ajax":     "https://s3.amazonaws.com/js.vistarmedia.com/ajax-8ec66a.tar.gz",
     "honk-di":             "0.0.10",
-    "vistar-html5player":  "^1.3.4"
+    "vistar-html5player":  "^1.3.5"
   },
   "devDependencies": {
     "chai":                "1.9.x",
