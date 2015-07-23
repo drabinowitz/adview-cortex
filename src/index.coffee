@@ -26,7 +26,8 @@ class AdView
   run: =>
     @currentAd = @playlist.read(1)
     if not @currentAd
-      return setTimeout @run, 2000
+      run = => @run()
+      return setTimeout run, 2000
 
     callbacks =
       error:  @_error
@@ -59,7 +60,8 @@ class AdView
       ad = setAsPlayed @currentAd, false
       @proofOfPlay.write ad
       @currentAd = null
-    setTimeout @run, 1000
+    run = => @run()
+    setTimeout run, 1000
 
   render: =>
     """
