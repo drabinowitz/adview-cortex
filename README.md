@@ -12,8 +12,6 @@ inject              = require 'honk-di'
 class Binder extends inject.Binder
   configure: ->
     @bind(Ajax).to(XMLHttpAjax)
-    @bindConstant('download-cache').to {}
-
     @bindConstant('config').to adConfig.config
 
 injector = new inject.Injector(new Binder)
@@ -40,6 +38,6 @@ or in your package.json
 
 ```
 "dependencies": {
-  "vistar-ad-view-cortex": "0.0.2"
+  "vistar-ad-view-cortex": "1.0.2"
 }
 ```
