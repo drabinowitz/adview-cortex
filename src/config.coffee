@@ -55,6 +55,7 @@ config =
   deviceId:          get 'vistar.device_id'
   venueId:           get 'vistar.venue_id'
   queueSize:         Number(get 'vistar.ad_buffer_length')
+  uniqueAdSeconds:   Number(get 'vistar.ads.unique_within_seconds')
   mimeTypes:         get 'vistar.mime_types'
   latitude:          get 'vistar.latitude'
   longitude:         get 'vistar.longitude'
