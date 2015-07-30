@@ -12,4 +12,4 @@ clean:
 publish: build
 	@npm publish
 
-.PHONY: build install publish clean publish
+.PHONY: build install publish clean
