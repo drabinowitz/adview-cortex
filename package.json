@@ -15,6 +15,7 @@
     "vistar-html5player":  "1.4.2"
   },
   "devDependencies": {
+    "ajax": "https://s3.amazonaws.com/js.vistarmedia.com/ajax-af2c5d.tar.gz",
     "chai":                "1.9.x",
     "coffee-script":       "1.7.1",
     "coffeeify":           "1.1.0",
