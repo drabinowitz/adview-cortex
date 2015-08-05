@@ -1,6 +1,7 @@
 require './test_case'
 {Ajax}   = require 'ajax'
 {expect} = require 'chai'
+sinon    = require 'sinon'
 
 {AdView}   = require '../src/index'
 {Playlist} = require '../src/playlist'
@@ -22,6 +23,12 @@ describe 'AdView', ->
     view = @injector.getInstance AdView
     expect(view.playlist).not.to.be.an.instanceOf Playlist
     expect(view.playlist._wait).to.equal 10000
+
+  context 'ads pipe is broken', ->
+    it 'should set the broken pipe flag', ->
+      expect(@view._pipeIsBroken).to.be.false
+      @view.playlist.emit 'error', new Error()
+      expect(@view._pipeIsBroken).to.be.true
 
   describe '#isReady', ->
 
@@ -109,6 +116,16 @@ describe 'AdView', ->
       expect(callbacks.end).to.equal view._end
       expect(callbacks.error).to.equal view._error
 
+    it 'should set running flag', ->
+      expect(@view._isRunning).to.be.false
+      @view.run()
+      expect(@view._isRunning).to.be.true
+
+    it 'should set last run time', ->
+      expect(@view._lastRunTime).to.equal 0
+      @view.run()
+      expect(@view._lastRunTime).to.be.above 0
+
     context 'callbacks given to Cortex API', ->
 
       context 'on end', ->
@@ -168,3 +185,132 @@ describe 'AdView', ->
           expect(@view.run).not.to.have.been.called
           @sandbox.clock.tick(1000)
           expect(@view.run).to.have.been.called.once
+
+  describe '#onHealthCheck', ->
+    beforeEach ->
+      @clock = sinon.useFakeTimers()
+
+    afterEach ->
+      @clock.restore()
+
+    it 'should fail when pipe is broken', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view._pipeIsBroken = true
+      @view.onHealthCheck (res) ->
+        expect(res.status).to.be.false
+        expect(res.reason).to.match /Ad view cannot process ads/
+        done()
+
+    it 'should pass when network is not connected', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb false
+      @view._isRunning = true
+      @view.onHealthCheck (res) ->
+        expect(res.status).to.be.true
+        done()
+
+    it 'should pass when adview is not running', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view.onHealthCheck (res) ->
+        expect(res.status).to.be.true
+        done()
+
+    it 'should fail when ad view stopped running', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view._lastRunTime = 1000
+      @view._isRunning = true
+      @view.onHealthCheck (res) =>
+        expect(res.status).to.be.true
+        @clock.tick (@config.healthCheck.lastAdViewRunTimeThreshold + 2000)
+        @view.onHealthCheck (res) =>
+          expect(res.status).to.be.false
+          expect(res.reason).to.match /Ad view has stopped working/
+          done()
+
+    it 'should fail when last ad request time exceeds the threshold', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view.ads.lastRequestTime = 1000
+      @view._isRunning = true
+      @view.onHealthCheck (res) =>
+        expect(res.status).to.be.true
+        @clock.tick (@config.healthCheck.lastAdRequestTimeThreshold + 2000)
+        @view._lastRunTime = new Date().getTime()
+        @view.onHealthCheck (res) =>
+          expect(res.status).to.be.false
+          expect(res.reason).to.match /Ad requests has stopped/
+          done()
+
+    it 'should fail when last successful ad request time exceeds the threshold', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view.ads.lastSuccessfulRequestTime = 1000
+      @view._isRunning = true
+      @view.onHealthCheck (res) =>
+        expect(res.status).to.be.true
+        @clock.tick (@config.healthCheck.lastSuccessfulAdRequestTimeThreshold + 2000)
+        @view._lastRunTime = new Date().getTime()
+        @view.ads.lastRequestTime = new Date().getTime()
+        @view.onHealthCheck (res) =>
+          expect(res.status).to.be.false
+          expect(res.reason).to.match /Ad requests are failing/
+          done()
+
+    it 'should fail when last PoP request time exceeds the threshold', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view.proofOfPlay.lastRequestTime = 1000
+      @view._isRunning = true
+      @view.onHealthCheck (res) =>
+        expect(res.status).to.be.true
+        @clock.tick (@config.healthCheck.lastPopRequestTimeThreshold + 2000)
+        @view._lastRunTime = new Date().getTime()
+        @view.ads.lastRequestTime = new Date().getTime()
+        @view.onHealthCheck (res) =>
+          expect(res.status).to.be.false
+          expect(res.reason).to.match /PoP requests has stopped/
+          done()
+
+    it 'should fail when last successful PoP request time exceeds the threshold', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view._isRunning = true
+      @view.onHealthCheck (res) =>
+        expect(res.status).to.be.true
+        @clock.tick (@config.healthCheck.lastSuccessfulPopRequestTimeThreshold + 2000)
+        @view._lastRunTime = new Date().getTime()
+        @view.ads.lastRequestTime = new Date().getTime()
+        @view.ads.lastSuccessfulRequestTime = new Date().getTime()
+        @view.proofOfPlay.lastRequestTime = new Date().getTime()
+        @view.onHealthCheck (res) =>
+          expect(res.status).to.be.false
+          expect(res.reason).to.match /PoP requests are failing/
+          done()
+
+    it 'should pass when everything is alright', (done) ->
+      cortex = @injector.getInstance 'cortex'
+      cortex.net =
+        isConnected: (cb) -> cb true
+      @view._isRunning = true
+      @view.onHealthCheck (res) =>
+        expect(res.status).to.be.true
+        @clock.tick (@config.healthCheck.lastSuccessfulPopRequestTimeThreshold + 2000)
+        @view._lastRunTime = new Date().getTime()
+        @view.ads.lastRequestTime = new Date().getTime()
+        @view.ads.lastSuccessfulRequestTime = new Date().getTime()
+        @view.proofOfPlay.lastRequestTime = new Date().getTime()
+        @view.proofOfPlay.lastSuccessfulRequestTime = new Date().getTime()
+        @view.onHealthCheck (res) =>
+          expect(res.status).to.be.true
+          done()
