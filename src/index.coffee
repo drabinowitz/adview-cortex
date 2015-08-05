@@ -26,10 +26,16 @@ class AdView
 
   constructor: ->
     @playlist = new (getPlaylistImpl(@config))(@proofOfPlay, @config)
-    @ads.pipe(@playlist)
+    @_pipeIsBroken = false
+    @ads.pipe(@playlist).on 'error', (e) =>
+      @_pipeIsBroken = true
     @currentAd = null
+    @_lastRunTime = 0
+    @_isRunning = false
 
   run: =>
+    @_isRunning = true
+    @_lastRunTime = new Date().getTime()
     @currentAd = @playlist.read(1)
     if not @isReady()
       return setTimeout @run, 2000
@@ -84,6 +90,33 @@ class AdView
       return @currentAd.asset_url
     null
 
+  onHealthCheck: (report) ->
+    @_cortex.net.isConnected (connected) =>
+      if @_pipeIsBroken
+        # AdView is useless, we need to restart the app.
+        report status: false, reason: 'Ad view cannot process ads'
+        return
+
+      if not connected or not @_isRunning
+        # When there's no internet connection or the application hasn't started
+        # this view we shouldn't do health checks.
+        report status: true
+        return
+
+      # AdView is okay, we need to check the html5 player
+      now = new Date().getTime()
+      if @_lastRunTime + @config.healthCheck.lastAdViewRunTimeThreshold < now
+        report status: false, reason: 'Ad view has stopped working'
+      else if @ads.lastRequestTime + @config.healthCheck.lastAdRequestTimeThreshold < now
+        report status: false, reason: 'Ad requests has stopped'
+      else if @ads.lastSuccessfulRequestTime + @config.healthCheck.lastSuccessfulAdRequestTimeThreshold < now
+        report status: false, reason: 'Ad requests are failing'
+      else if @proofOfPlay.lastRequestTime + @config.healthCheck.lastPopRequestTimeThreshold < now
+        report status: false, reason: 'PoP requests has stopped'
+      else if @proofOfPlay.lastSuccessfulRequestTime + @config.healthCheck.lastSuccessfulPopRequestTimeThreshold < now
+        report status: false, reason: 'PoP requests are failing'
+      else
+        report status: true
 
 module.exports = {
   AdView

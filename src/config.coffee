@@ -18,6 +18,13 @@ defaultConfig['vistar.mime_types']        = [
   'image/png'
   'video/webm'
 ]
+
+defaultConfig['vistar.health_check.last_ad_view_run_time_threshold']            = 3 * 60 * 1000
+defaultConfig['vistar.health_check.last_ad_request_time_threshold']             = 3 * 60 * 1000
+defaultConfig['vistar.health_check.last_successful_ad_request_time_threshold']  = 15 * 60 * 1000
+defaultConfig['vistar.health_check.last_pop_request_time_threshold']            = 3 * 60 * 1000
+defaultConfig['vistar.health_check.last_successful_pop_request_time_threshold'] = 15 * 60 * 1000
+
 defaultConfig['vistar.url'] =
   'http://dev.api.vistarmedia.com/api/v1/get_ad/json'
 
@@ -70,6 +77,12 @@ config =
       allow_audio:      eval(get 'vistar.allow_audio')
     }
   ]
+  healthCheck:
+    lastAdViewRunTimeThreshold:             Number(get 'vistar.health_check.last_ad_view_run_time_threshold')
+    lastAdRequestTimeThreshold:             Number(get 'vistar.health_check.last_ad_request_time_threshold')
+    lastSuccessfulAdRequestTimeThreshold:   Number(get 'vistar.health_check.last_successful_ad_request_time_threshold')
+    lastPopRequestTimeThreshold:            Number(get 'vistar.health_check.last_pop_request_time_threshold')
+    lastSuccessfulPopRequestTimeThreshold:  Number(get 'vistar.health_check.last_successful_pop_request_time_threshold')
 
 
 module.exports = {
