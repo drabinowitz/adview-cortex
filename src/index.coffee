@@ -38,15 +38,21 @@ class AdView
       error:  @_error
       end:    @_end
 
+    opts =
+      view:
+        label: @currentAd.original_asset_url
+
     if @isImage()
       @_cortex.view.submitView @constructor.name,
-        @render()
+        @render(),
         @currentAd.length_in_milliseconds,
-        callbacks
+        callbacks,
+        opts
     if @isVideo()
       @_cortex.view.submitVideo @constructor.name,
-        @render()
-        callbacks
+        @render(),
+        callbacks,
+        opts
 
   _end: =>
     if @currentAd
