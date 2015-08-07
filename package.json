@@ -1,6 +1,6 @@
 {
   "name": "vistar-ad-view-cortex",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "An ad view compatible with Cortex 1.6, using Cortex scheduler",
   "main": "build/index.js",
   "scripts": {
@@ -13,11 +13,11 @@
   "author": "engineering@vistarmedia.com",
   "license": "ISC",
   "dependencies": {
-    "honk-di": "0.0.10",
-    "vistar-html5player": "^1.5.1"
+    "honk-di": "1.0.0",
+    "vistar-html5player": "1.5.2"
   },
   "devDependencies": {
-    "ajax": "https://s3.amazonaws.com/js.vistarmedia.com/ajax-af2c5d.tar.gz",
+    "ajax": "https://s3.amazonaws.com/js.vistarmedia.com/ajax-8bdec1.tar.gz",
     "chai": "1.9.x",
     "coffee-script": "1.7.1",
     "coffeeify": "1.1.0",
