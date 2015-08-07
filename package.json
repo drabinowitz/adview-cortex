@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "honk-di": "1.0.0",
-    "vistar-html5player": "1.5.2"
+    "vistar-html5player": "1.5.3"
   },
   "devDependencies": {
     "ajax": "https://s3.amazonaws.com/js.vistarmedia.com/ajax-8bdec1.tar.gz",
