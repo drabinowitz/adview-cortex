@@ -31,6 +31,7 @@ class AdView
       @_pipeIsBroken = true
     @currentAd = null
     @_lastRunTime = 0
+    @_lastAdRenderTime = 0
     @_isRunning = false
 
   run: =>
@@ -47,6 +48,8 @@ class AdView
     opts =
       view:
         label: @currentAd.original_asset_url
+
+    @_lastAdRenderTime = new Date().getTime()
 
     if @isImage()
       @_cortex.view.submitView @constructor.name,
@@ -115,11 +118,14 @@ class AdView
         report status: false, reason: 'Ad view has stopped working'
       else if @ads.lastRequestTime + @config.healthCheck.lastAdRequestTimeThreshold < now
         report status: false, reason: 'Ad requests has stopped'
-      else if @ads.lastSuccessfulRequestTime + @config.healthCheck.lastSuccessfulAdRequestTimeThreshold < now
+      else if @ads.lastSuccessfulRequestTime +
+              @config.healthCheck.lastSuccessfulAdRequestTimeThreshold < now
         report status: false, reason: 'Ad requests are failing'
-      else if @proofOfPlay.lastRequestTime + @config.healthCheck.lastPopRequestTimeThreshold < now
+      else if @proofOfPlay.lastRequestTime +
+              @config.healthCheck.lastPopRequestTimeThreshold < @_lastAdRenderTime
         report status: false, reason: 'PoP requests has stopped'
-      else if @proofOfPlay.lastSuccessfulRequestTime + @config.healthCheck.lastSuccessfulPopRequestTimeThreshold < now
+      else if @proofOfPlay.lastSuccessfulRequestTime +
+              @config.healthCheck.lastSuccessfulPopRequestTimeThreshold < @_lastAdRenderTime
         report status: false, reason: 'PoP requests are failing'
       else
         report status: true

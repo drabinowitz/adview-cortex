@@ -271,10 +271,12 @@ describe 'AdView', ->
         isConnected: (cb) -> cb true
       @view.proofOfPlay.lastRequestTime = 1000
       @view._isRunning = true
+      @view._lastAdRenderTime = 1000
       @view.onHealthCheck (res) =>
         expect(res.status).to.be.true
         @clock.tick (@config.healthCheck.lastPopRequestTimeThreshold + 2000)
         @view._lastRunTime = new Date().getTime()
+        @view._lastAdRenderTime = new Date().getTime()
         @view.ads.lastRequestTime = new Date().getTime()
         @view.onHealthCheck (res) =>
           expect(res.status).to.be.false
@@ -286,10 +288,13 @@ describe 'AdView', ->
       cortex.net =
         isConnected: (cb) -> cb true
       @view._isRunning = true
+      @view._lastAdRenderTime = 1000
+      @view.proofOfPlay.lastSuccessfulRequestTime = 1000
       @view.onHealthCheck (res) =>
         expect(res.status).to.be.true
         @clock.tick (@config.healthCheck.lastSuccessfulPopRequestTimeThreshold + 2000)
         @view._lastRunTime = new Date().getTime()
+        @view._lastAdRenderTime = new Date().getTime()
         @view.ads.lastRequestTime = new Date().getTime()
         @view.ads.lastSuccessfulRequestTime = new Date().getTime()
         @view.proofOfPlay.lastRequestTime = new Date().getTime()
