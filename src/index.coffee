@@ -49,8 +49,6 @@ class AdView
       view:
         label: @currentAd.original_asset_url
 
-    @_lastAdRenderTime = new Date().getTime()
-
     if @isImage()
       @_cortex.view.submitView @constructor.name,
         @render(),
@@ -68,6 +66,7 @@ class AdView
       ad = setAsPlayed @currentAd, true
       @proofOfPlay.write ad
       @currentAd = null
+      @_lastAdRenderTime = new Date().getTime()
     @run()
 
   _error: (err) =>

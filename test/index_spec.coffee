@@ -142,6 +142,15 @@ describe 'AdView', ->
           expect(ad.creative_id).to.equal 'house'
           expect(ad.html5player.was_played).to.be.true
 
+        it 'should update the last render time', ->
+          @sandbox.stub @view, 'currentAd',
+            creative_id: 'house'
+          @sandbox.spy @view.proofOfPlay, 'write'
+
+          lrt = @view._lastAdRenderTime
+          @view._end()
+          expect(@view._lastAdRenderTime).to.be.above lrt
+
         it 'should set currentAd to null', ->
           @sandbox.stub @view, 'currentAd',
             creative_id: 'house'
