@@ -12,9 +12,11 @@ defaultConfig['vistar.allow_audio']       = false
 defaultConfig['vistar.direct_connection'] = false
 defaultConfig['vistar.cpm_floor_cents']   = 0
 defaultConfig['vistar.ad_buffer_length']  = 8
+defaultConfig['vistar.ads.playlist_impl'] = 'Playlist' # or 'ConsecutiveOnlyAfterFallback'
 defaultConfig['vistar.mime_types']        = [
   'image/gif'
   'image/jpg'
+  'image/jpeg'
   'image/png'
   'video/webm'
 ]
@@ -50,25 +52,25 @@ get = (key) ->
 
 
 config =
-  url:               get 'vistar.url'
-  apiKey:            get 'vistar.api_key'
-  networkId:         get 'vistar.network_id'
-  width:             Number(get 'vistar.width')
-  height:            Number(get 'vistar.height')
-  debug:             get 'vistar.debug'
-  cacheAssets:       get 'vistar.cache_assets'
-  allow_audio:       eval(get 'vistar.allow_audio')
-  directConnection:  get 'vistar.direct_connection'
-  deviceId:          get 'vistar.device_id'
-  venueId:           get 'vistar.venue_id'
-  queueSize:         Number(get 'vistar.ad_buffer_length')
-  uniqueAdSeconds:   Number(get 'vistar.ads.unique_within_seconds')
-  mimeTypes:         get 'vistar.mime_types'
-  latitude:          get 'vistar.latitude'
-  longitude:         get 'vistar.longitude'
-  cpmFloorCents:     get 'vistar.cpm_floor_cents'
-  minDuration:       get 'vistar.min_duration'
-  maxDuration:       get 'vistar.max_duration'
+  url:                     get 'vistar.url'
+  apiKey:                  get 'vistar.api_key'
+  networkId:               get 'vistar.network_id'
+  width:                   Number(get 'vistar.width')
+  height:                  Number(get 'vistar.height')
+  debug:                   get 'vistar.debug'
+  cacheAssets:             get 'vistar.cache_assets'
+  allow_audio:             eval(get 'vistar.allow_audio')
+  directConnection:        get 'vistar.direct_connection'
+  deviceId:                get 'vistar.device_id'
+  venueId:                 get 'vistar.venue_id'
+  queueSize:               Number(get 'vistar.ad_buffer_length')
+  playlistImplementation:  get 'vistar.ads.playlist_impl'
+  mimeTypes:               get 'vistar.mime_types'
+  latitude:                get 'vistar.latitude'
+  longitude:               get 'vistar.longitude'
+  cpmFloorCents:           get 'vistar.cpm_floor_cents'
+  minDuration:             get 'vistar.min_duration'
+  maxDuration:             get 'vistar.max_duration'
   displayArea: [
     {
       id:               'display-0'

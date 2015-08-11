@@ -3,8 +3,9 @@ require './test_case'
 {expect} = require 'chai'
 sinon    = require 'sinon'
 
-{AdView}   = require '../src/index'
-{Playlist} = require '../src/playlist'
+{AdView}                       = require '../src/index'
+{ConsecutiveOnlyAfterFallback} = require '../src/playlist'
+{Playlist}                     = require '../src/playlist'
 
 
 describe 'AdView', ->
@@ -17,12 +18,13 @@ describe 'AdView', ->
   it 'should use the default Playlist', ->
     expect(@view.playlist).to.be.an.instanceOf Playlist
 
-  it 'should use TimedUniquePlaylist if config.uniqueAdSeconds', ->
+  it 'should use given config.playlist_implementation', ->
     @config.uniqueAdSeconds = undefined
-    @sandbox.stub @config, 'uniqueAdSeconds', 10
+    @sandbox.stub @config,
+      'playlistImplementation',
+      'ConsecutiveOnlyAfterFallback'
     view = @injector.getInstance AdView
-    expect(view.playlist).not.to.be.an.instanceOf Playlist
-    expect(view.playlist._wait).to.equal 10000
+    expect(view.playlist).to.be.an.instanceOf ConsecutiveOnlyAfterFallback
 
   context 'ads pipe is broken', ->
     it 'should set the broken pipe flag', ->
