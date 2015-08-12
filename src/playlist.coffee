@@ -1,49 +1,48 @@
-inject        = require 'honk-di'
 {PassThrough} = require 'stream'
 {Transform}   = require 'stream'
 
-setAsPlayed      = require('vistar-html5player').Player.setAsPlayed
-{ProofOfPlay}    = require 'vistar-html5player'
-
-
-now = -> (new Date).getTime()
-
 
 class Playlist extends PassThrough
-  constructor: ->
+  constructor: (@_cortex) ->
     super(objectMode: true, highWaterMark: 1)
 
 
-class TimedUniquePlaylist extends Transform
-  # only allow the same ad every n seconds
-  # if we get an ad we saw within the past n seconds, expire it
+class ConsecutiveOnlyAfterFallback extends Transform
+  # only pass ads thru this stream consecutively after we've submitted a no-op
+  # view to Cortex, which will flip flop back and forth between the AdView and
+  # the registered fallback view if it exists
 
-  constructor: (@proofOfPlay, config) ->
-    @_wait   = Number(config?.uniqueAdSeconds or 15) * 1000
-    @_lastAd = null
+  constructor: (@_cortex) ->
+    @_setAd(null)
     super(objectMode: true, highWaterMark: 1)
 
   _setAd: (ad) ->
     @_lastAd = ad
-    @_at = now()
 
   _shouldNotPlayAd: (ad) ->
     if not ad.creative_id
       # without creative_id we have nothing.  help a homie out if that happens
       throw new Error('creative_id required')
-    isSame = ad.creative_id is @_lastAd?.creative_id
-    isSame and (now() - @_at) <= @_wait
+    ad.creative_id is @_lastAd?.creative_id
 
   _transform: (ad, encoding, done) ->
     if @_shouldNotPlayAd(ad)
-      @proofOfPlay.write setAsPlayed(ad, false)
+      callbacks =
+        end:    @_noOpEnd(done)
+        error:  (e) -> console.error(e)
+      @_cortex.view.submitNoop('AdView', callbacks)
     else
       @_setAd(ad)
       @push(ad)
-    done()
+      done()
+
+  _noOpEnd: (done) ->
+    =>
+      @_setAd(null)
+      done()
 
 
 module.exports = {
+  ConsecutiveOnlyAfterFallback
   Playlist
-  TimedUniquePlaylist
 }

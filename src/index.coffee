@@ -8,12 +8,13 @@ config = require './config'
 
 {
   Playlist
-  TimedUniquePlaylist
+  ConsecutiveOnlyAfterFallback
 } = require './playlist'
 
+
 getPlaylistImpl = (config) ->
-  if config.uniqueAdSeconds
-    TimedUniquePlaylist
+  if config.playlistImplementation is 'ConsecutiveOnlyAfterFallback'
+    ConsecutiveOnlyAfterFallback
   else
     Playlist
 
@@ -25,7 +26,7 @@ class AdView
   _cortex:      inject 'cortex'
 
   constructor: ->
-    @playlist = new (getPlaylistImpl(@config))(@proofOfPlay, @config)
+    @playlist = new (getPlaylistImpl(@config))(@_cortex)
     @_pipeIsBroken = false
     @ads.pipe(@playlist).on 'error', (e) =>
       @_pipeIsBroken = true
