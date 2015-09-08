@@ -5,8 +5,6 @@ defaultConfig['vistar.api_key']           = '58b68728-11d4-41ed-964a-95dca7b59ab
 defaultConfig['vistar.network_id']        = 'Ex-f6cCtRcydns8mcQqFWQ'
 defaultConfig['vistar.device_id']         = 'test-device-id'
 defaultConfig['vistar.debug']             = false
-defaultConfig['vistar.width']             = 1366
-defaultConfig['vistar.height']            = 768
 defaultConfig['vistar.cache_assets']      = true
 defaultConfig['vistar.allow_audio']       = false
 defaultConfig['vistar.direct_connection'] = false
@@ -44,19 +42,32 @@ if not isNaN(latitude) and not isNaN(longitude)
   cortex['vistar.latitude']  = latitude
   cortex['vistar.longitude'] = longitude
 
+width  = Number(cortex['vistar.width'])
+height = Number(cortex['vistar.height'])
+if width and height
+  cortex['vistar.width']  = width
+  cortex['vistar.height'] = height
+else
+  throw new Error(
+    "Invalid width/height: #{cortex['vistar.width']}/#{cortex['vistar.height']}"
+  )
+
 cortex['vistar.mime_types'] = Cortex?.player.getMimeTypes()
 
 
 get = (key) ->
-  cortex[key] or defaultConfig[key]
+  if key of cortex
+    cortex[key]
+  else
+    defaultConfig[key]
 
 
 config =
   url:                     get 'vistar.url'
   apiKey:                  get 'vistar.api_key'
   networkId:               get 'vistar.network_id'
-  width:                   Number(get 'vistar.width')
-  height:                  Number(get 'vistar.height')
+  width:                   get 'vistar.width'
+  height:                  get 'vistar.height'
   debug:                   get 'vistar.debug'
   cacheAssets:             get 'vistar.cache_assets'
   allow_audio:             eval(get 'vistar.allow_audio')
@@ -74,8 +85,8 @@ config =
   displayArea: [
     {
       id:               'display-0'
-      width:            Number(get 'vistar.width')
-      height:           Number(get 'vistar.height')
+      width:            get 'vistar.width'
+      height:           get 'vistar.height'
       allow_audio:      eval(get 'vistar.allow_audio')
     }
   ]
