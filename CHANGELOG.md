@@ -1,6 +1,6 @@
 # cortex-adview
 
-### 2.3.1
+### 2.3.2
 
 * remove `vistar.width` and `vistar.height` from default config. Throw an error
   if they are not provided/are invalid.
