@@ -1,5 +1,10 @@
 # cortex-adview
 
+### 2.3.1
+
+* remove `vistar.width` and `vistar.height` from default config. Throw an error
+  if they are not provided/are invalid.
+
 ### 2.3.0
 
 * remove `vistar.ads.unique_within_seconds` in favor of specifying a playlist

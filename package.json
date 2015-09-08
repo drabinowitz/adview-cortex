@@ -1,6 +1,6 @@
 {
   "name": "vistar-ad-view-cortex",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "An ad view compatible with Cortex 1.6, using Cortex scheduler",
   "main": "build/index.js",
   "scripts": {
