@@ -90,9 +90,10 @@ class AdView
   render: =>
     # return something to give to Cortex's submitView/Video function
     if @isImage()
+      url = @currentAd.asset_url
       return """
       <div class="image-ad"
-        style="background: url(#{@currentAd.asset_url}) no-repeat fixed;">
+        style="background: url(#{url}) no-repeat center center local;">
       </div>
       """
     if @isVideo()
