@@ -1,3 +1,6 @@
 node_modules
 xunit.xml
 build/*
+demo/build/*
+demo/dist/*
+demo/node_modules

@@ -1,4 +1,5 @@
 GULP=@./node_modules/.bin/gulp
+DEMO=@cd ./demo/
 
 install:
 	@npm install
@@ -12,4 +13,10 @@ clean:
 publish: build
 	@npm publish
 
-.PHONY: build install publish clean
+build_demo:
+	$(DEMO) && make build
+
+zip_demo:
+	$(DEMO) && make zip
+
+.PHONY: build install publish clean build_demo zip_demo

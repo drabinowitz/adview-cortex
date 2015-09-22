@@ -1,0 +1,38 @@
+{
+    "name": "adview-app",
+    "version": "1.0.0",
+    "parameters": [
+        {
+            "name": "vistar.url",
+            "default": "http://staging.api.vistarmedia.com/api/v1/get_ad/json"
+        },
+        {
+            "name": "vistar.api_key",
+            "default": "<api key>"
+        },
+        {
+            "name": "vistar.network_id",
+            "default": "<network id>"
+        },
+        {
+            "name": "vistar.venue_id",
+            "default": "<venue id>"
+        },
+        {
+            "name": "vistar.ad_buffer_length",
+            "default": "12"
+        },
+        {
+            "name": "vistar.allow_audio",
+            "default": "true"
+        },
+        {
+            "name": "vistar.lat",
+            "default": "0"
+        },
+        {
+            "name": "vistar.lng",
+            "default": "0"
+        }
+    ]
+}
